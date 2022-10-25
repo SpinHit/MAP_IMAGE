@@ -25,7 +25,7 @@
 
 <body>
   <div timeline>
-    <p>Importer un répertoire</p>
+    <p>Importer un rÃ©pertoire</p>
     <!-- We import a repertory to analyse with library exif.js -->
     <input type="file" id="files" name="files[]" webkitdirectory mozdirectory directory multiple />
     <!-- We print all the images in the repertory -->
@@ -40,23 +40,82 @@
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCKU_JMpwMy9Gwy8v-Ud6WYJFsheero0M&callback=initMap">
       </script>
+    <script src="exif.js"></script>
 
     <script>
-      document.getElementById('files').addEventListener('change', handleFileSelect, false);
 
-      function handleFileSelect(evt) {
-        var files = evt.target.files; // FileList object
-
-        // files is a FileList of File objects. List some properties.
-        var output = [];
-        for (var i = 0, f; f = files[i]; i++) {
-          output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-            f.size, ' bytes, last modified: ',
-            f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-            '</li>');
+      // we fill a list variable with all the images and videos in the repertory
+      var list = [];
+      var list2 = [];
+      var files = document.getElementById('files');
+      files.addEventListener('change', function (e) {
+        var files = e.target.files;
+        for (var i = 0, file; file = files[i]; i++) {
+          if (file.type.match('image.*') || file.type.match('video.*')) {
+            list.push(file);
+          }
         }
-        document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
-      }
+        /* console.log(list); */
+        console.log(list.length);
+        for (var i = 0; i < list.length; i++) {
+          var file = list[i];
+          EXIF.getData(file, function () {
+            var allMetaData = EXIF.getAllTags(this);
+            console.log(this.name);
+            console.log(allMetaData);
+            //gps data
+            if (allMetaData.GPSLatitude) { var gps = allMetaData.GPSLatitude; } else { var gps = null; }
+            if (allMetaData.GPSLongitude) { var gps2 = allMetaData.GPSLongitude; } else { var gps2 = null; }
+            var lat = gps[0] + gps[1] / 60 + gps[2] / 3600;
+            var lng = gps2[0] + gps2[1] / 60 + gps2[2] / 3600;
+
+            //date data
+            if (allMetaData.DateTimeOriginal) { var date = allMetaData.DateTimeOriginal; } else { var date = null; }
+
+            // path data
+            var path = this.webkitRelativePath;
+
+            list2.push({ lat, lng, path, date });
+          });
+
+        }
+        console.log(list2);
+
+      });
+
+
+
+
+
+
+
+      // we put in a list the gps coordinates of all the images and videos in the repertory and their path and their date of creation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      // we create the map
+
+
 
       function initMap() {
 
