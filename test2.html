@@ -1,0 +1,132 @@
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCKU_JMpwMy9Gwy8v-Ud6WYJFsheero0M&callback=initMap">
+    </script>
+<script>
+    function initMap() {
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 11,
+            center: { lat: 48.189742, lng: 16.334193 }
+        });
+
+        // Create an array of alphabetical characters used to label the markers.
+        var labels = [' ', ' ', ' ', ' ', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        /* var labelimage = ['C:/Users/SpinHit/Desktop/MAP_IMAGE/gps/DSCN0010.jpg', 'gps/DSCN0021.jpg', 'gps/DSCN0012.jpg', 'gps/DSCN0042.jpg']; */
+        // we import images path from list2
+        var labelimage = [];
+        for (var i = 0; i < list2.length; i++) {
+            labelimage.push('C:/Users/SpinHit/Desktop/' + list2[i].path);
+        }
+        console.log("listelabel" + labelimage);
+
+        // we import the images from labelimage array and we add them as
+
+
+
+        // we add the markers to the map and we put the image at the top of the marker
+        var markers = locations.map(function (location, i) {
+            return new google.maps.Marker({
+                position: location,
+                label: labels[i % labels.length],
+                icon: {
+                    url: labelimage[i % labelimage.length],
+                    scaledSize: new google.maps.Size(100, 100)
+                }
+            });
+        });
+
+
+        // on click event to the markers we show the image with a bigger size with the name of the image
+        markers.forEach(function (marker) {
+            marker.addListener('click', function () {
+
+
+                var image = new Image();
+                image.src = marker.icon.url;
+                image.style.width = '70%';
+                image.style.height = '70%';
+                image.style.display = 'block';
+                image.style.margin = 'auto';
+                image.style.border = '1px solid black';
+                image.style.borderRadius = '10px';
+                image.style.boxShadow = '0 0 10px black';
+                image.style.backgroundColor = 'white';
+                image.style.padding = '10px';
+                image.style.position = 'absolute';
+                image.style.top = '0';
+                image.style.left = '0';
+                image.style.right = '0';
+                image.style.bottom = '0';
+                image.style.zIndex = '1000';
+                image.style.cursor = 'pointer';
+                image.style.opacity = '0';
+                image.style.transition = 'opacity 0.5s';
+                image.style.webkitTransition = 'opacity 0.5s';
+                image.style.mozTransition = 'opacity 0.5s';
+                image.style.msTransition = 'opacity 0.5s';
+                image.style.oTransition = 'opacity 0.5s';
+                // we write on top of the image the name of the image
+                var text = document.createElement('p');
+                text.innerHTML = marker.icon.url;
+                text.style.textAlign = 'center';
+                text.style.color = 'white';
+                text.style.fontSize = '200%';
+                text.style.fontWeight = 'bold';
+                text.style.textShadow = '0 0 10px black';
+                text.style.margin = '0';
+                text.style.padding = '0';
+                text.style.position = 'absolute';
+                text.style.top = '10vh';
+                text.style.left = '0';
+                text.style.right = '0';
+                text.style.bottom = '0';
+                text.style.zIndex = '1001';
+                text.style.cursor = 'pointer';
+                text.style.opacity = '0';
+                text.style.transition = 'opacity 0.5s';
+                text.style.webkitTransition = 'opacity 0.5s';
+                text.style.mozTransition = 'opacity 0.5s';
+                text.style.msTransition = 'opacity 0.5s';
+                text.style.oTransition = 'opacity 0.5s';
+                // we add the image and the text to the body
+                document.body.appendChild(image);
+                document.body.appendChild(text);
+                // we add the event to the image and the text to remove them from the body
+                image.addEventListener('click', function () {
+                    document.body.removeChild(image);
+                    document.body.removeChild(text);
+                });
+                text.addEventListener('click', function () {
+                    document.body.removeChild(image);
+                    document.body.removeChild(text);
+                });
+                // we add the opacity to the image and the text
+                setTimeout(function () {
+                    image.style.opacity = '1';
+                    text.style.opacity = '1';
+                }, 100);
+            });
+        });
+
+
+        // Add a marker clusterer to manage the markers.
+        var markerCluster = new MarkerClusterer(map, markers,
+            { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+    }
+    var locations = [
+        { lat: 48.196473, lng: 16.359408 },
+        { lat: 48.310975, lng: 16.312852 },
+        { lat: 48.189742, lng: 16.334193 },
+        { lat: 48.189455, lng: 16.567853 }
+
+
+    ]
+
+
+
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtjaD-saUZQ47PbxigOg25cvuO6_SuX3M&callback=initMap" async
+    defer></script>
