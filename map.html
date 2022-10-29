@@ -8,18 +8,13 @@
   <!-- we import jquery -->
   <script src="jquery-3.6.1.min.js"></script>
   <!-- <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"> -->
-  </script>
-  <!-- <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCKU_JMpwMy9Gwy8v-Ud6WYJFsheero0M&callback=initMap">
-    </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtjaD-saUZQ47PbxigOg25cvuO6_SuX3M&callback=initMap"
-    async defer></script> -->
+
   <title>Marker Clustering</title>
   <style>
     /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
     #map {
-      height: 100%;
+      height: 50%;
       border: 1px solid black;
     }
 
@@ -30,17 +25,234 @@
       margin: 0;
       padding: 0;
     }
+
+    .gm-style img {
+      border-radius: 15px;
+    }
+
+    .timeline,
+    .timeline-horizontal {
+      list-style: none;
+      padding: 20px;
+      position: relative;
+
+    }
+
+    .timeline:before {
+      top: 40px;
+      bottom: 0;
+      position: absolute;
+      content: " ";
+      width: 3px;
+      background-color: #eeeeee;
+      left: 50%;
+      margin-left: -1.5px;
+    }
+
+    .timeline .timeline-item {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .timeline .timeline-item:before,
+    .timeline .timeline-item:after {
+      content: "";
+      display: table;
+    }
+
+    .timeline .timeline-item:after {
+      clear: both;
+    }
+
+    .timeline .timeline-item .timeline-badge {
+      color: #fff;
+      width: 54px;
+      height: 54px;
+      line-height: 52px;
+      font-size: 22px;
+      text-align: center;
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      margin-left: -25px;
+      background-color: #bbdefb;
+      border: 3px solid #ffffff;
+      z-index: 100;
+      border-top-right-radius: 50%;
+      border-top-left-radius: 50%;
+      border-bottom-right-radius: 50%;
+      border-bottom-left-radius: 50%;
+    }
+
+    .timeline .timeline-item .timeline-badge i,
+    .timeline .timeline-item .timeline-badge .fa,
+    .timeline .timeline-item .timeline-badge .glyphicon {
+      top: 2px;
+      left: 0px;
+    }
+
+    .timeline .timeline-item .timeline-badge.primary {
+      background-color: #bbdefb;
+    }
+
+    .timeline .timeline-item .timeline-badge.info {
+      background-color: #26c6da;
+    }
+
+    .timeline .timeline-item .timeline-badge.success {
+      background-color: #80DEEA;
+    }
+
+    .timeline .timeline-item .timeline-badge.warning {
+      background-color: #a7ffeb;
+    }
+
+    .timeline .timeline-item .timeline-badge.danger {
+      background-color: #42a5f5;
+    }
+
+    .timeline .timeline-item .timeline-panel {
+      position: relative;
+      width: 46%;
+      float: left;
+      right: 16px;
+      border: 1px solid #c0c0c0;
+      background: #ffffff;
+      border-radius: 2px;
+      padding: 20px;
+      -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+    }
+
+    .timeline .timeline-item .timeline-panel:before {
+      position: absolute;
+      top: 26px;
+      right: -16px;
+      display: inline-block;
+      border-top: 16px solid transparent;
+      border-left: 16px solid #c0c0c0;
+      border-right: 0 solid #c0c0c0;
+      border-bottom: 16px solid transparent;
+      content: " ";
+    }
+
+    .timeline .timeline-item .timeline-panel .timeline-title {
+      margin-top: 0;
+      font-size: 25px;
+      font-family: 'Waiting for the Sunrise', cursive;
+      color: #0c0c0c
+    }
+
+    .timeline .timeline-item .timeline-panel .timeline-body>p,
+    .timeline .timeline-item .timeline-panel .timeline-body>ul {
+      margin-bottom: 0;
+      font-family: 'Cinzel', sans-serif;
+      color: #a79898;
+    }
+
+    .timeline .timeline-item .timeline-panel .timeline-body>p+p {
+      margin-top: 0px;
+    }
+
+    .timeline .timeline-item:last-child:nth-child(even) {
+      float: right;
+    }
+
+    .timeline .timeline-item:nth-child(even) .timeline-panel {
+      float: right;
+      left: 16px;
+    }
+
+    .timeline .timeline-item:nth-child(even) .timeline-panel:before {
+      border-left-width: 0;
+      border-right-width: 14px;
+      left: -14px;
+      right: auto;
+    }
+
+    .timeline-horizontal {
+      list-style: none;
+      position: relative;
+      padding: 20px 0px 20px 0px;
+      display: inline-block;
+      margin-left: 100px;
+    }
+
+    .timeline-horizontal:before {
+      height: 3px;
+      top: auto;
+      bottom: 26px;
+      left: 56px;
+      right: 0;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .timeline-horizontal .timeline-item {
+      display: table-cell;
+      height: 280px;
+      width: 20%;
+      min-width: 320px;
+      float: none !important;
+      padding-left: 0px;
+      padding-right: 20px;
+      margin: 0 auto;
+      vertical-align: bottom;
+    }
+
+    .timeline-horizontal .timeline-item .timeline-panel {
+      top: auto;
+      bottom: 64px;
+      display: inline-block;
+      float: none !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .timeline-horizontal .timeline-item .timeline-panel:before {
+      top: auto;
+      bottom: -16px;
+      left: 28px !important;
+      right: auto;
+      border-right: 16px solid transparent !important;
+      border-top: 16px solid #c0c0c0 !important;
+      border-bottom: 0 solid #c0c0c0 !important;
+      border-left: 16px solid transparent !important;
+    }
+
+    .timeline-horizontal .timeline-item:before,
+    .timeline-horizontal .timeline-item:after {
+      display: none;
+    }
+
+    .timeline-horizontal .timeline-item .timeline-badge {
+      top: auto;
+      bottom: 0px;
+      left: 43px;
+    }
+
+    /* We put a style to the first p with a selector */
+    #timeline p:first-child {
+      font-size: 3vh;
+      font-family: 'Waiting for the Sunrise', cursive;
+      color: #0c0c0c;
+      margin-left: 100px;
+    }
   </style>
 </head>
 
 <body>
-  <div timeline>
+  <div id='repertory'>
     <p>Importer un repertoire</p>
     <!-- We import a repertory to analyse with library exif.js -->
     <input type="file" id="files" name="files[]" webkitdirectory mozdirectory directory multiple />
     <!-- We print all the images in the repertory -->
     <div id="list"></div>
   </div>
+
+
 
   <div id="map">
 
@@ -75,7 +287,7 @@
             list.push(file);
           }
         }
-        /* console.log(list); */
+        console.log(list);
         console.log(list.length);
         for (var i = 0; i < list.length; i++) {
           var file = list[i];
@@ -84,16 +296,21 @@
             //gps data
             if (allMetaData.GPSLatitude) { var gps = allMetaData.GPSLatitude; } else { var gps = null; }
             if (allMetaData.GPSLongitude) { var gps2 = allMetaData.GPSLongitude; } else { var gps2 = null; }
-            var lat = gps[0] + gps[1] / 60 + gps[2] / 3600;
-            var lng = gps2[0] + gps2[1] / 60 + gps2[2] / 3600;
+            // if gps = null we put null to the variable lat and lng
+            var lat = gps ? gps[0] + gps[1] / 60 + gps[2] / 3600 : null;
+
+            var lng = gps2 ? gps2[0] + gps2[1] / 60 + gps2[2] / 3600 : null;
+
 
             //date data
             if (allMetaData.DateTimeOriginal) { var date = allMetaData.DateTimeOriginal; } else { var date = null; }
 
             // whole path data from source
             var path = this.webkitRelativePath;
-
-            list2.push({ lat, lng, path, date });
+            // if lat or lng is null, we don't add the image to the list
+            if (lat != null && lng != null) {
+              list2.push({ lat, lng, path, date });
+            }
           });
 
         }
@@ -107,49 +324,60 @@
 
 
           loadScript("https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js").then(function () {
-            return loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBtjaD-saUZQ47PbxigOg25cvuO6_SuX3M&callback=initMap");
-          }).then(function () {
-            initMap();
+            loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBtjaD-saUZQ47PbxigOg25cvuO6_SuX3M&callback=initMap").then(function () {
+              initMap();
+            });
           });
+          // we fill location2 with the data from list2
+          var locations = [];
+          for (var i = 0; i < list2.length; i++) {
+            var lat = list2[i].lat;
+            var lng = list2[i].lng;
+            locations.push({ lat, lng });
+          }
 
-          var locations = [
-            { lat: 48.196473, lng: 16.359408 },
-            { lat: 48.310975, lng: 16.312852 },
-            { lat: 48.189742, lng: 16.334193 },
-            { lat: 48.189455, lng: 16.567853 }];
 
           function initMap() {
 
             var map = new google.maps.Map(document.getElementById('map'), {
               zoom: 11,
-              center: { lat: 48.189742, lng: 16.334193 }
+              center: locations[0]
             });
 
-            // Create an array of alphabetical characters used to label the markers.
-            var labels = [' ', ' ', ' ', ' ', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-            /* var labelimage = ['C:/Users/SpinHit/Desktop/MAP_IMAGE/gps/DSCN0010.jpg', 'gps/DSCN0021.jpg', 'gps/DSCN0012.jpg', 'gps/DSCN0042.jpg']; */
+
+
+
+
+            var labels = [];
+            for (var i = 0; i < list2.length; i++) {
+              labels.push("");
+            }
             // we import images path from list2
             var labelimage = [];
             for (var i = 0; i < list2.length; i++) {
-              labelimage.push('C:/Users/SpinHit/Desktop/' + list2[i].path);
+              /* 'C:/Users/SpinHit/Desktop/MAP_IMAGE/' + */
+              labelimage.push('C:/Users/SpinHit/Desktop/MAP_IMAGE/' + list2[i].path);
             }
             console.log("listelabel" + labelimage);
 
-            // we import the images from labelimage array and we add them as
 
 
 
-            // we add the markers to the map and we put the image at the top of the marker
             var markers = locations.map(function (location, i) {
               return new google.maps.Marker({
                 position: location,
                 label: labels[i % labels.length],
                 icon: {
                   url: labelimage[i % labelimage.length],
-                  scaledSize: new google.maps.Size(100, 100)
-                }
+                  scaledSize: new google.maps.Size(100, 100),
+                },
+                title: 'markerpins'
               });
             });
+
+
+
+
 
 
             // on click event to the markers we show the image with a bigger size with the name of the image
@@ -161,7 +389,6 @@
                 image.src = marker.icon.url;
                 image.style.width = '70%';
                 image.style.height = '70%';
-                image.style.display = 'block';
                 image.style.margin = 'auto';
                 image.style.border = '1px solid black';
                 image.style.borderRadius = '10px';
@@ -173,14 +400,7 @@
                 image.style.left = '0';
                 image.style.right = '0';
                 image.style.bottom = '0';
-                image.style.zIndex = '1000';
-                image.style.cursor = 'pointer';
-                image.style.opacity = '0';
-                image.style.transition = 'opacity 0.5s';
-                image.style.webkitTransition = 'opacity 0.5s';
-                image.style.mozTransition = 'opacity 0.5s';
-                image.style.msTransition = 'opacity 0.5s';
-                image.style.oTransition = 'opacity 0.5s';
+
                 // we write on top of the image the name of the image
                 var text = document.createElement('p');
                 text.innerHTML = marker.icon.url;
@@ -190,20 +410,12 @@
                 text.style.fontWeight = 'bold';
                 text.style.textShadow = '0 0 10px black';
                 text.style.margin = '0';
-                text.style.padding = '0';
                 text.style.position = 'absolute';
                 text.style.top = '10vh';
                 text.style.left = '0';
                 text.style.right = '0';
                 text.style.bottom = '0';
                 text.style.zIndex = '1001';
-                text.style.cursor = 'pointer';
-                text.style.opacity = '0';
-                text.style.transition = 'opacity 0.5s';
-                text.style.webkitTransition = 'opacity 0.5s';
-                text.style.mozTransition = 'opacity 0.5s';
-                text.style.msTransition = 'opacity 0.5s';
-                text.style.oTransition = 'opacity 0.5s';
                 // we add the image and the text to the body
                 document.body.appendChild(image);
                 document.body.appendChild(text);
@@ -229,21 +441,9 @@
             var markerCluster = new MarkerClusterer(map, markers,
               { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
           }
-          loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyDCKU_JMpwMy9Gwy8v-Ud6WYJFsheero0M&callback=initMap")
-            .then(function () {
-              console.log('script loaded');
-            })
-            .catch(function () {
-              console.log('error');
-            });
 
-          loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBtjaD-saUZQ47PbxigOg25cvuO6_SuX3M&callback=initMap")
-            .then(function () {
-              console.log('script loaded');
-            })
-            .catch(function () {
-              console.log('error');
-            });
+
+
 
         }
 
@@ -254,9 +454,105 @@
 
 
 
+
+
+
     </script>
 
   </div>
+
+  <div id="timeline">
+    <!-- we create a timeline with the date of the images in the list2 -->
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+
+          <div style="display:inline-block;width:100%;overflow-y:auto;">
+            <p>Courbe du temps :</p>
+
+            <ul class="timeline timeline-horizontal">
+
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <script>
+      var interval2 = setInterval(function () {
+        if (list2.length > 0) {
+          clearInterval(interval2);
+          // we add the images from the list2 to the timeline
+          for (var i = 0; i < list2.length; i++) {
+            var li = document.createElement('li');
+            li.className = 'timeline-item';
+            var div1 = document.createElement('div');
+            div1.className = 'timeline-badge primary';
+            var i1 = document.createElement('i');
+            i1.className = 'glyphicon glyphicon-check';
+            div1.appendChild(i1);
+            var div2 = document.createElement('div');
+            div2.className = 'timeline-panel';
+            var div3 = document.createElement('div');
+            div3.className = 'timeline-heading';
+            var h4 = document.createElement('h4');
+            h4.className = 'timeline-title';
+            h4.innerHTML = list2[i].date;
+            div3.appendChild(h4);
+            var div4 = document.createElement('div');
+            div4.className = 'timeline-body';
+            var image = document.createElement('img');
+            image.src = 'C:/Users/SpinHit/Desktop/MAP_IMAGE/' + list2[i].path
+            image.style.width = '100%';
+            div4.appendChild(image);
+            div2.appendChild(div3);
+            div2.appendChild(div4);
+            li.appendChild(div1);
+            li.appendChild(div2);
+            document.querySelector('#timeline ul').appendChild(li);
+          }
+
+          // on hover we upscale the size of the image in the timelineand push the other images to the right
+          var timeline = document.querySelectorAll('.timeline li');
+          for (var i = 0; i < timeline.length; i++) {
+            timeline[i].addEventListener('mouseover', function () {
+              this.style.width = '200px';
+              this.style.marginRight = '20px';
+              this.style.zIndex = '1000';
+              this.style.transition = 'all 0.5s';
+              this.style.transform = 'scale(1.3)';
+              this.style.transformOrigin = 'right';
+            });
+            timeline[i].addEventListener('mouseout', function () {
+              this.style.width = '100px';
+              this.style.marginRight = '0';
+              this.style.zIndex = '0';
+              this.style.transition = 'all 0.5s';
+              this.style.transform = 'scale(1)';
+              this.style.transformOrigin = 'right';
+            });
+          }
+
+
+
+
+
+        }
+
+      }, 1000);
+
+
+
+
+
+    </script>
+
+
+
+
+
+</body>
 
 
 
