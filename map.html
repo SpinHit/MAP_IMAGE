@@ -276,7 +276,8 @@
 
       // we fill a list variable with all the images and videos in the repertory
       var list = [];
-      var list2 = [];
+      var listgps = [];
+      var listdate = [];
       var files = document.getElementById('files');
 
 
@@ -287,8 +288,7 @@
             list.push(file);
           }
         }
-        console.log(list);
-        console.log(list.length);
+
         for (var i = 0; i < list.length; i++) {
           var file = list[i];
           EXIF.getData(file, function () {
@@ -302,42 +302,63 @@
             var lng = gps2 ? gps2[0] + gps2[1] / 60 + gps2[2] / 3600 : null;
 
 
+
+
             //date data
             if (allMetaData.DateTimeOriginal) { var date = allMetaData.DateTimeOriginal; } else { var date = null; }
 
             // whole path data from source
             var path = this.webkitRelativePath;
+
+            // we put the name of the file
+            var name = this.name
+            var model = allMetaData.Model;
+            var brand = allMetaData.Make;
+            // size of the file in mo
+            var size = this.size / 1000000 + " Mo";
+
             // if lat or lng is null, we don't add the image to the list
             if (lat != null && lng != null) {
-              list2.push({ lat, lng, path, date });
+              listgps.push({ date, path, name, model, brand, size, lat, lng });
             }
+
+            if (date != null) {
+              listdate.push({ date, path, name, model, brand, size, lat, lng });
+            }
+
+
           });
 
         }
 
       });
-      // we pause the script and we unpause it when the list2 is full
+      // we pause the script and we unpause it when the listgps is full
       var interval = setInterval(function () {
-        if (list2.length > 0) {
+        if (listgps.length > 0) {
           clearInterval(interval);
-          console.log(list2);
-
 
           loadScript("https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js").then(function () {
             loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBtjaD-saUZQ47PbxigOg25cvuO6_SuX3M&callback=initMap").then(function () {
               initMap();
             });
           });
-          // we fill location2 with the data from list2
+
+          console.log(listgps);
+          console.log(listdate);
+          // we fill location2 with the data from listgps
           var locations = [];
-          for (var i = 0; i < list2.length; i++) {
-            var lat = list2[i].lat;
-            var lng = list2[i].lng;
+          for (var i = 0; i < listgps.length; i++) {
+            var lat = listgps[i].lat;
+            var lng = listgps[i].lng;
             locations.push({ lat, lng });
           }
 
 
+
+
           function initMap() {
+
+
 
             var map = new google.maps.Map(document.getElementById('map'), {
               zoom: 11,
@@ -349,16 +370,16 @@
 
 
             var labels = [];
-            for (var i = 0; i < list2.length; i++) {
+            for (var i = 0; i < listgps.length; i++) {
               labels.push("");
             }
-            // we import images path from list2
+            // we import images path from listgps
             var labelimage = [];
-            for (var i = 0; i < list2.length; i++) {
+            for (var i = 0; i < listgps.length; i++) {
               /* 'C:/Users/SpinHit/Desktop/MAP_IMAGE/' + */
-              labelimage.push('C:/Users/SpinHit/Desktop/MAP_IMAGE/' + list2[i].path);
+              labelimage.push('C:/Users/SpinHit/Desktop/MAP_IMAGE/' + listgps[i].path);
             }
-            console.log("listelabel" + labelimage);
+
 
 
 
@@ -370,6 +391,13 @@
                 icon: {
                   url: labelimage[i % labelimage.length],
                   scaledSize: new google.maps.Size(100, 100),
+                  name: listgps[i].name,
+                  model: listgps[i].model,
+                  brand: listgps[i].brand,
+                  taille: listgps[i].size,
+                  date: listgps[i].date,
+                  Localisation: listgps[i].lat + " " + listgps[i].lng
+
                 },
                 title: 'markerpins'
               });
@@ -380,66 +408,24 @@
 
 
 
+
             // on click event to the markers we show the image with a bigger size with the name of the image
             markers.forEach(function (marker) {
               marker.addListener('click', function () {
-
-
-                var image = new Image();
-                image.src = marker.icon.url;
-                image.style.width = '70%';
-                image.style.height = '70%';
-                image.style.margin = 'auto';
-                image.style.border = '1px solid black';
-                image.style.borderRadius = '10px';
-                image.style.boxShadow = '0 0 10px black';
-                image.style.backgroundColor = 'white';
-                image.style.padding = '10px';
-                image.style.position = 'absolute';
-                image.style.top = '0';
-                image.style.left = '0';
-                image.style.right = '0';
-                image.style.bottom = '0';
-
-                // we write on top of the image the name of the image
-                var text = document.createElement('p');
-                text.innerHTML = marker.icon.url;
-                text.style.textAlign = 'center';
-                text.style.color = 'white';
-                text.style.fontSize = '200%';
-                text.style.fontWeight = 'bold';
-                text.style.textShadow = '0 0 10px black';
-                text.style.margin = '0';
-                text.style.position = 'absolute';
-                text.style.top = '10vh';
-                text.style.left = '0';
-                text.style.right = '0';
-                text.style.bottom = '0';
-                text.style.zIndex = '1001';
-                // we add the image and the text to the body
-                document.body.appendChild(image);
-                document.body.appendChild(text);
-                // we add the event to the image and the text to remove them from the body
-                image.addEventListener('click', function () {
-                  document.body.removeChild(image);
-                  document.body.removeChild(text);
+                var infowindow = new google.maps.InfoWindow({
+                  content: '<img src="' + marker.icon.url + '" style="width: 100%; height: 100%;">' + '<h4 class="timeline-title">' + marker.icon.name + '</h4>' + '<p>' + marker.icon.model + '</p>' + '<p>' + marker.icon.brand + '</p>' + '<p>' + marker.icon.taille + '</p>' + '<p>' + marker.icon.date + '</p>' + '<p>' + marker.icon.Localisation + '</p>'
                 });
-                text.addEventListener('click', function () {
-                  document.body.removeChild(image);
-                  document.body.removeChild(text);
-                });
-                // we add the opacity to the image and the text
-                setTimeout(function () {
-                  image.style.opacity = '1';
-                  text.style.opacity = '1';
-                }, 100);
+                infowindow.open(map, marker);
               });
             });
+
+            // we wait all the markers
 
 
             // Add a marker clusterer to manage the markers.
             var markerCluster = new MarkerClusterer(map, markers,
               { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
           }
 
 
@@ -462,7 +448,7 @@
   </div>
 
   <div id="timeline">
-    <!-- we create a timeline with the date of the images in the list2 -->
+    <!-- we create a timeline with the date of the images in the listgps -->
 
     <div class="container">
       <div class="row">
@@ -481,10 +467,10 @@
     </div>
     <script>
       var interval2 = setInterval(function () {
-        if (list2.length > 0) {
+        if (listdate.length > 0) {
           clearInterval(interval2);
-          // we add the images from the list2 to the timeline
-          for (var i = 0; i < list2.length; i++) {
+          // we add the images from the listgps to the timeline
+          for (var i = 0; i < listdate.length; i++) {
             var li = document.createElement('li');
             li.className = 'timeline-item';
             var div1 = document.createElement('div');
@@ -496,14 +482,23 @@
             div2.className = 'timeline-panel';
             var div3 = document.createElement('div');
             div3.className = 'timeline-heading';
+            //we add the name of the image as a title
             var h4 = document.createElement('h4');
             h4.className = 'timeline-title';
-            h4.innerHTML = list2[i].date;
+            h4.innerHTML = listdate[i].name;
             div3.appendChild(h4);
+            // we add the date, the brand and the model of the camera and the size of the image and the location of the image as a subtitle
+            var p = document.createElement('p');
+            p.className = 'timeline-subtitle';
+            p.innerHTML = 'Date : ' + listdate[i].date + '<br>Marque : ' + listdate[i].brand + '<br>Modèle : ' + listdate[i].model + '<br>Taille : ' + listdate[i].size + '<br>Localisation : ' + listdate[i].lat + ' ' + listdate[i].lng;
+
+            div3.appendChild(p);
+
+
             var div4 = document.createElement('div');
             div4.className = 'timeline-body';
             var image = document.createElement('img');
-            image.src = 'C:/Users/SpinHit/Desktop/MAP_IMAGE/' + list2[i].path
+            image.src = 'C:/Users/SpinHit/Desktop/MAP_IMAGE/' + listdate[i].path
             image.style.width = '100%';
             div4.appendChild(image);
             div2.appendChild(div3);
