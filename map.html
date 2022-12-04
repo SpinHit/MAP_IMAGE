@@ -5,250 +5,20 @@
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
   <meta charset="utf-8">
   <script src="exif.js"></script>
-  <!-- we import jquery -->
   <script src="jquery-3.6.1.min.js"></script>
-  <!-- <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"> -->
 
-  <title>Marker Clustering</title>
+  <title>Projet Visualisation</title>
   <style>
-    /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-    #map {
-      height: 50%;
-      border: 1px solid black;
-    }
-
-    /* Optional: Makes the sample page fill the window. */
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
-    .gm-style img {
-      border-radius: 15px;
-    }
-
-    .timeline,
-    .timeline-horizontal {
-      list-style: none;
-      padding: 20px;
-      position: relative;
-
-    }
-
-    .timeline:before {
-      top: 40px;
-      bottom: 0;
-      position: absolute;
-      content: " ";
-      width: 3px;
-      background-color: #eeeeee;
-      left: 50%;
-      margin-left: -1.5px;
-    }
-
-    .timeline .timeline-item {
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .timeline .timeline-item:before,
-    .timeline .timeline-item:after {
-      content: "";
-      display: table;
-    }
-
-    .timeline .timeline-item:after {
-      clear: both;
-    }
-
-    .timeline .timeline-item .timeline-badge {
-      color: #fff;
-      width: 54px;
-      height: 54px;
-      line-height: 52px;
-      font-size: 22px;
-      text-align: center;
-      position: absolute;
-      top: 18px;
-      left: 50%;
-      margin-left: -25px;
-      background-color: #bbdefb;
-      border: 3px solid #ffffff;
-      z-index: 100;
-      border-top-right-radius: 50%;
-      border-top-left-radius: 50%;
-      border-bottom-right-radius: 50%;
-      border-bottom-left-radius: 50%;
-    }
-
-    .timeline .timeline-item .timeline-badge i,
-    .timeline .timeline-item .timeline-badge .fa,
-    .timeline .timeline-item .timeline-badge .glyphicon {
-      top: 2px;
-      left: 0px;
-    }
-
-    .timeline .timeline-item .timeline-badge.primary {
-      background-color: #bbdefb;
-    }
-
-    .timeline .timeline-item .timeline-badge.info {
-      background-color: #26c6da;
-    }
-
-    .timeline .timeline-item .timeline-badge.success {
-      background-color: #80DEEA;
-    }
-
-    .timeline .timeline-item .timeline-badge.warning {
-      background-color: #a7ffeb;
-    }
-
-    .timeline .timeline-item .timeline-badge.danger {
-      background-color: #42a5f5;
-    }
-
-    .timeline .timeline-item .timeline-panel {
-      position: relative;
-      width: 46%;
-      float: left;
-      right: 16px;
-      border: 1px solid #c0c0c0;
-      background: #ffffff;
-      border-radius: 2px;
-      padding: 20px;
-      -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
-      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
-    }
-
-    .timeline .timeline-item .timeline-panel:before {
-      position: absolute;
-      top: 26px;
-      right: -16px;
-      display: inline-block;
-      border-top: 16px solid transparent;
-      border-left: 16px solid #c0c0c0;
-      border-right: 0 solid #c0c0c0;
-      border-bottom: 16px solid transparent;
-      content: " ";
-    }
-
-    .timeline .timeline-item .timeline-panel .timeline-title {
-      margin-top: 0;
-      font-size: 25px;
-      font-family: 'Waiting for the Sunrise', cursive;
-      color: #0c0c0c
-    }
-
-    .timeline .timeline-item .timeline-panel .timeline-body>p,
-    .timeline .timeline-item .timeline-panel .timeline-body>ul {
-      margin-bottom: 0;
-      font-family: 'Cinzel', sans-serif;
-      color: #a79898;
-    }
-
-    .timeline .timeline-item .timeline-panel .timeline-body>p+p {
-      margin-top: 0px;
-    }
-
-    .timeline .timeline-item:last-child:nth-child(even) {
-      float: right;
-    }
-
-    .timeline .timeline-item:nth-child(even) .timeline-panel {
-      float: right;
-      left: 16px;
-    }
-
-    .timeline .timeline-item:nth-child(even) .timeline-panel:before {
-      border-left-width: 0;
-      border-right-width: 14px;
-      left: -14px;
-      right: auto;
-    }
-
-    .timeline-horizontal {
-      list-style: none;
-      position: relative;
-      padding: 20px 0px 20px 0px;
-      display: inline-block;
-      margin-left: 100px;
-    }
-
-    .timeline-horizontal:before {
-      height: 3px;
-      top: auto;
-      bottom: 26px;
-      left: 56px;
-      right: 0;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .timeline-horizontal .timeline-item {
-      display: table-cell;
-      height: 280px;
-      width: 20%;
-      min-width: 320px;
-      float: none !important;
-      padding-left: 0px;
-      padding-right: 20px;
-      margin: 0 auto;
-      vertical-align: bottom;
-    }
-
-    .timeline-horizontal .timeline-item .timeline-panel {
-      top: auto;
-      bottom: 64px;
-      display: inline-block;
-      float: none !important;
-      left: 0 !important;
-      right: 0 !important;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .timeline-horizontal .timeline-item .timeline-panel:before {
-      top: auto;
-      bottom: -16px;
-      left: 28px !important;
-      right: auto;
-      border-right: 16px solid transparent !important;
-      border-top: 16px solid #c0c0c0 !important;
-      border-bottom: 0 solid #c0c0c0 !important;
-      border-left: 16px solid transparent !important;
-    }
-
-    .timeline-horizontal .timeline-item:before,
-    .timeline-horizontal .timeline-item:after {
-      display: none;
-    }
-
-    .timeline-horizontal .timeline-item .timeline-badge {
-      top: auto;
-      bottom: 0px;
-      left: 43px;
-    }
-
-    /* We put a style to the first p with a selector */
-    #timeline p:first-child {
-      font-size: 3vh;
-      font-family: 'Waiting for the Sunrise', cursive;
-      color: #0c0c0c;
-      margin-left: 100px;
-    }
+    @import url('main.css');
   </style>
 </head>
 
 <body>
   <div id='repertory'>
     <p>Importer un repertoire</p>
-    <!-- We import a repertory to analyse with library exif.js -->
+    <!-- On importe un repertoire à analyser avec la librairie exif.js -->
     <input type="file" id="files" name="files[]" webkitdirectory mozdirectory directory multiple />
-    <!-- We print all the images in the repertory -->
+    <!-- On affiche le resultat de l'analyse -->
     <div id="list"></div>
   </div>
 
@@ -258,7 +28,7 @@
 
     <script>
 
-      //function to import a src like a async defer
+      //fonction pour importer un src comme un async defer pour les scripts js 
       function loadScript(src) {
         return new Promise(function (resolve, reject) {
           var script = document.createElement('script');
@@ -269,59 +39,63 @@
         });
       }
 
-
-
-
-
-
-      // we fill a list variable with all the images and videos in the repertory
+      // dans list on va lister toutes les images récupérées
       var list = [];
+      // listGps va contenir les images qui possèdent des coordonnées gps
       var listgps = [];
+      // listdate va contenir les images qui possèdent des dates de création
       var listdate = [];
+
+
       var files = document.getElementById('files');
 
-
+      // on lance tout le code quand on a importé un repertoire
       files.addEventListener('change', function (e) {
+        // on met dans une variable le tableau des fichiers
         var files = e.target.files;
+        // on va vérifier si les fichiers sont des images
         for (var i = 0, file; file = files[i]; i++) {
+          // condition pour vérifier si les fichiers sont des images
           if (file.type.match('image.*')) {
+            // on push l'image dans la liste des images crées au début
             list.push(file);
           }
         }
 
+        // pour chaque image on va récupérer les données exif avec la librairie exif.js
         for (var i = 0; i < list.length; i++) {
           var file = list[i];
+          // on récupére les données exif de l'image
           EXIF.getData(file, function () {
             var allMetaData = EXIF.getAllTags(this);
             //gps data
             if (allMetaData.GPSLatitude) { var gps = allMetaData.GPSLatitude; } else { var gps = null; }
             if (allMetaData.GPSLongitude) { var gps2 = allMetaData.GPSLongitude; } else { var gps2 = null; }
-            // if gps = null we put null to the variable lat and lng
+            //si gps = null on met null dans les variables lat et lng
             var lat = gps ? gps[0] + gps[1] / 60 + gps[2] / 3600 : null;
-
             var lng = gps2 ? gps2[0] + gps2[1] / 60 + gps2[2] / 3600 : null;
+            // le : null permet de mettre null dans la variable si la condition est fausse
 
-
-
-
-            //date data
+            // On regarde si l'image a une date de creation
             if (allMetaData.DateTimeOriginal) { var date = allMetaData.DateTimeOriginal; } else { var date = null; }
 
-            // whole path data from source
+            // on récupère le chemin de l'image
             var path = this.webkitRelativePath;
 
-            // we put the name of the file
+            // on récupère le nom de l'image
             var name = this.name
+            // on récupère le model de l'appareil photo
             var model = allMetaData.Model;
+            // on récupère la marque de l'appareil photo
             var brand = allMetaData.Make;
-            // size of the file in mo
+            // on récupère la taille de l'image
             var size = this.size / 1000000 + " Mo";
 
-            // if lat or lng is null, we don't add the image to the list
+            // si lat ou lng est null, on ne l'ajoute pas à la liste
             if (lat != null && lng != null) {
               listgps.push({ date, path, name, model, brand, size, lat, lng });
             }
-
+            // si date est null, on ne l'ajoute pas à la liste
             if (date != null) {
               listdate.push({ date, path, name, model, brand, size, lat, lng });
             }
@@ -332,20 +106,25 @@
         }
 
       });
-      // we pause the script and we unpause it when the listgps is full
+      // on met en pause le script et on le reprend quand la liste est remplie
       var interval = setInterval(function () {
         if (listgps.length > 0) {
+          // on clear l'interval pour ne pas le relancer à chaque fois que la liste est remplie  
           clearInterval(interval);
 
+          // on lances les scripts google maps et markerclusterer
           loadScript("https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js").then(function () {
             loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBtjaD-saUZQ47PbxigOg25cvuO6_SuX3M&callback=initMap").then(function () {
+              // on lance la fonction initMap définie plus bas qui va afficher les marqueurs sur la carte google maps
               initMap();
             });
           });
 
+          // on affiche dans la console la liste des images avec les données récupérées
           console.log(listgps);
           console.log(listdate);
-          // we fill location2 with the data from listgps
+
+          // on remplit locations avec les données de listgps
           var locations = [];
           for (var i = 0; i < listgps.length; i++) {
             var lat = listgps[i].lat;
@@ -353,49 +132,45 @@
             locations.push({ lat, lng });
           }
 
-
-
-
           function initMap() {
-
-
-
+            // on crée la carte google maps
             var map = new google.maps.Map(document.getElementById('map'), {
               zoom: 11,
+              // on met le focus de chargement de la carte sur la première image
               center: locations[0]
             });
 
-
-
-
-
-            var labels = [];
-            for (var i = 0; i < listgps.length; i++) {
-              labels.push("");
-            }
-            // we import images path from listgps
+            // on importe les images dans markers
             var labelimage = [];
             for (var i = 0; i < listgps.length; i++) {
-              /* 'C:/Users/SpinHit/Desktop/MAP_IMAGE/' + */
-              labelimage.push('C:/Users/SpinHit/Desktop/MAP_IMAGE/' + listgps[i].path);
+              // on met le chemin du programme dans une variable en brut car en javascript on ne peut pas récupérer le chemin du programme pour des raisons de sécurité
+              chemin = 'C:/Users/SpinHit/Desktop/MAP_IMAGE/'
+              // on met dans labelimage le chemin de l'image a récupérer
+              labelimage.push(chemin + listgps[i].path);
             }
 
-
-
-
-
+            // on crée les marqueurs sur la carte google maps
             var markers = locations.map(function (location, i) {
               return new google.maps.Marker({
+                // on met les coordonnées de l'image
                 position: location,
-                label: labels[i % labels.length],
+                // on met l'image en tant que marqueur sur la carte google maps
                 icon: {
+                  // on met le chemin de l'image
                   url: labelimage[i % labelimage.length],
+                  // on met la taille de l'image
                   scaledSize: new google.maps.Size(100, 100),
+                  // on met le nom de l'image
                   name: listgps[i].name,
+                  // on met le model de l'appareil photo
                   model: listgps[i].model,
+                  // on met la marque de l'appareil photo
                   brand: listgps[i].brand,
+                  // on met la taille de l'image
                   taille: listgps[i].size,
+                  // on met la date de création de l'image
                   date: listgps[i].date,
+                  // on met la localisation de l'image
                   Localisation: listgps[i].lat + " " + listgps[i].lng
 
                 },
@@ -403,52 +178,30 @@
               });
             });
 
-
-
-
-
-
-
-            // on click event to the markers we show the image with a bigger size with the name of the image
+            // on fait en sorte que quand on clique sur les marqueurs cela affiche les informations de l'image dans une infobulle
             markers.forEach(function (marker) {
+              // on crée l'infobulle avec le listener click sur le marqueur
               marker.addListener('click', function () {
+                // on crée l'infobulle avec les informations de l'image
                 var infowindow = new google.maps.InfoWindow({
                   content: '<img src="' + marker.icon.url + '" style="width: 100%; height: 100%;">' + '<h4 class="timeline-title">' + marker.icon.name + '</h4>' + '<p>' + marker.icon.model + '</p>' + '<p>' + marker.icon.brand + '</p>' + '<p>' + marker.icon.taille + '</p>' + '<p>' + marker.icon.date + '</p>' + '<p>' + marker.icon.Localisation + '</p>'
                 });
+                // on affiche l'infobulle
                 infowindow.open(map, marker);
               });
             });
 
-            // we wait all the markers
-
-
-            // Add a marker clusterer to manage the markers.
+            // on crée le cluster de marqueurs sur la carte google maps avec le script markerclusterer de google
             var markerCluster = new MarkerClusterer(map, markers,
               { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
-
           }
-
-
-
-
         }
-
       }, 1000);
-
-
-
-
-
-
-
-
-
     </script>
-
   </div>
 
   <div id="timeline">
-    <!-- we create a timeline with the date of the images in the listgps -->
+    <!-- on crée une timeline avec les informations des images -->
 
     <div class="container">
       <div class="row">
@@ -466,11 +219,16 @@
 
     </div>
     <script>
+      // on lance le script que quand la liste est remplie
       var interval2 = setInterval(function () {
+        // on met une condition pour ne pas lancer le script si la liste est vide
         if (listdate.length > 0) {
+          // on clear l'interval pour ne pas le relancer à chaque fois que la liste est remplie
           clearInterval(interval2);
-          // we add the images from the listgps to the timeline
+          // on ajoute les images de la liste listdate à la timeline, pour chaque image on créer une carte avec les informations de l'image
           for (var i = 0; i < listdate.length; i++) {
+            // https://codepen.io/ftrujilloh/pen/PpMYgJ/
+            // on créer la timeline avec le code ci-dessus et on a modifié le code pour qu'il corresponde à nos besoins 
             var li = document.createElement('li');
             li.className = 'timeline-item';
             var div1 = document.createElement('div');
@@ -508,26 +266,26 @@
             document.querySelector('#timeline ul').appendChild(li);
           }
 
-          // on hover we upscale the size of the image in the timelineand push the other images to the right
-          var timeline = document.querySelectorAll('.timeline li');
-          for (var i = 0; i < timeline.length; i++) {
-            timeline[i].addEventListener('mouseover', function () {
-              this.style.width = '200px';
-              this.style.marginRight = '20px';
-              this.style.zIndex = '1000';
-              this.style.transition = 'all 0.5s';
-              this.style.transform = 'scale(1.3)';
-              this.style.transformOrigin = 'right';
-            });
-            timeline[i].addEventListener('mouseout', function () {
-              this.style.width = '100px';
-              this.style.marginRight = '0';
-              this.style.zIndex = '0';
-              this.style.transition = 'all 0.5s';
-              this.style.transform = 'scale(1)';
-              this.style.transformOrigin = 'right';
-            });
-          }
+          // au survol on agrandit la taille de l'image dans la timeline et on pousse les autres images vers la droite
+          /*           var timeline = document.querySelectorAll('.timeline li');
+                    for (var i = 0; i < timeline.length; i++) {
+                      timeline[i].addEventListener('mouseover', function () {
+                        this.style.width = '200px';
+                        this.style.marginRight = '20px';
+                        this.style.zIndex = '1000';
+                        this.style.transition = 'all 0.5s';
+                        this.style.transform = 'scale(1.3)';
+                        this.style.transformOrigin = 'right';
+                      });
+                      timeline[i].addEventListener('mouseout', function () {
+                        this.style.width = '100px';
+                        this.style.marginRight = '0';
+                        this.style.zIndex = '0';
+                        this.style.transition = 'all 0.5s';
+                        this.style.transform = 'scale(1)';
+                        this.style.transformOrigin = 'right';
+                      });
+                    } */
 
 
 
