@@ -14,15 +14,20 @@
 </head>
 
 <body>
-  <div id='repertory'>
-    <p>Importer un repertoire</p>
-    <!-- On importe un repertoire à analyser avec la librairie exif.js -->
-    <input type="file" id="files" name="files[]" webkitdirectory mozdirectory directory multiple />
-    <!-- On affiche le resultat de l'analyse -->
-    <div id="list"></div>
-  </div>
 
+  <!-- On créer un deuxième champ pour importer une image et l'insserrer dans une base de données a l'aide d'un bouton -->
+  <form action="upload.php" method="post" enctype="multipart/form-data">
+    <label for="image">Sélectionnez une image à télécharger :</label>
+    <input type="file" name="image" id="image">
+    <input type="submit" value="Télécharger l'image" name="submit">
+</form>
 
+  <?php 
+  ini_set('memory_limit', '512M');
+  // on importe upload.php pour pouvoir utiliser la base de données
+  include 'upload.php';
+
+  ?>
 
   <div id="map">
 
@@ -49,63 +54,60 @@
 
       var files = document.getElementById('files');
 
-      // on lance tout le code quand on a importé un repertoire
-      files.addEventListener('change', function (e) {
-        // on met dans une variable le tableau des fichiers
-        var files = e.target.files;
-        // on va vérifier si les fichiers sont des images
-        for (var i = 0, file; file = files[i]; i++) {
-          // condition pour vérifier si les fichiers sont des images
-          if (file.type.match('image.*')) {
-            // on push l'image dans la liste des images crées au début
-            list.push(file);
-          }
+     
+      <?php
+
+      // on va afficher les images de la base de données
+      $pdo = new PDO("mysql:host=$localhost;dbname=$dbname", $dbusername, $dbpassword);
+      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $sql = "SELECT * FROM images";
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
+      $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+       // on va dans la base de données et on récupère les images sous format blob et les métadonnées ( name, camera_model, brand, weight, created_at, gps_position_lat,gps_position_long, size )
+
+       // on remplie la liste list avec les images récupérées de la base de données et on les affiche dans la console
+      foreach ($images as $image) {
+        $name = $image['name'];
+        $camera_model = $image['camera_model'];
+        $brand = $image['brand'];
+        $weight = $image['weight'];
+        $created_at = $image['created_at'];
+        $gps_position_lat = $image['gps_position_lat'];
+        $gps_position_long = $image['gps_position_long'];
+        $size = $image['size'];
+        $image = $image['image'];
+        $image = base64_encode($image);
+        echo "list.push({name: '$name', camera_model: '$camera_model', brand: '$brand', weight: '$weight', created_at: '$created_at', gps_position_lat: $gps_position_lat, gps_position_long: $gps_position_long, size: '$size', image: '$image'});";
+      }
+
+    
+
+
+      ?>
+
+      // on va parcourir la liste des images et on va récupérer les images qui possèdent des coordonnées gps
+      for (var i = 0; i < list.length; i++) {
+        // on vérifie que la latitude et la longitude ne sont pas nulles et que la latitude et la longitude ne sont pas égales à 0
+        if (list[i].gps_position_lat != null && list[i].gps_position_long != null && list[i].gps_position_lat != 0 && list[i].gps_position_long != 0) {
+          listgps.push(list[i]);
         }
+      }
 
-        // pour chaque image on va récupérer les données exif avec la librairie exif.js
-        for (var i = 0; i < list.length; i++) {
-          var file = list[i];
-          // on récupére les données exif de l'image
-          EXIF.getData(file, function () {
-            var allMetaData = EXIF.getAllTags(this);
-            //gps data
-            if (allMetaData.GPSLatitude) { var gps = allMetaData.GPSLatitude; } else { var gps = null; }
-            if (allMetaData.GPSLongitude) { var gps2 = allMetaData.GPSLongitude; } else { var gps2 = null; }
-            //si gps = null on met null dans les variables lat et lng
-            var lat = gps ? gps[0] + gps[1] / 60 + gps[2] / 3600 : null;
-            var lng = gps2 ? gps2[0] + gps2[1] / 60 + gps2[2] / 3600 : null;
-            // le : null permet de mettre null dans la variable si la condition est fausse
-
-            // On regarde si l'image a une date de creation
-            if (allMetaData.DateTimeOriginal) { var date = allMetaData.DateTimeOriginal; } else { var date = null; }
-
-            // on récupère le chemin de l'image
-            var path = this.webkitRelativePath;
-
-            // on récupère le nom de l'image
-            var name = this.name
-            // on récupère le model de l'appareil photo
-            var model = allMetaData.Model;
-            // on récupère la marque de l'appareil photo
-            var brand = allMetaData.Make;
-            // on récupère la taille de l'image
-            var size = this.size / 1000000 + " Mo";
-
-            // si lat ou lng est null, on ne l'ajoute pas à la liste
-            if (lat != null && lng != null) {
-              listgps.push({ date, path, name, model, brand, size, lat, lng });
-            }
-            // si date est null, on ne l'ajoute pas à la liste
-            if (date != null) {
-              listdate.push({ date, path, name, model, brand, size, lat, lng });
-            }
-
-
-          });
-
+      // on va parcourir la liste des images et on va récupérer les images qui possèdent des dates de création
+      for (var i = 0; i < list.length; i++) {
+        // on vérifie que la date n'est pas nulle et que la date n'est pas égale à 0000-00-00 00:00:00
+        if (list[i].created_at != null && list[i].created_at != "0000-00-00 00:00:00") {
+          listdate.push(list[i]);
         }
+      }
 
-      });
+
+      
+
+
+      // 
       // on met en pause le script et on le reprend quand la liste est remplie
       var interval = setInterval(function () {
         if (listgps.length > 0) {
@@ -127,28 +129,38 @@
           // on remplit locations avec les données de listgps
           var locations = [];
           for (var i = 0; i < listgps.length; i++) {
-            var lat = listgps[i].lat;
-            var lng = listgps[i].lng;
+            // on met pas sous le format string les données de latitude et longitude
+            
+            var lat = listgps[i].gps_position_lat;
+            var lng = listgps[i].gps_position_long;
+            console.log(lat);
+            console.log(lng);
             locations.push({ lat, lng });
           }
+          console.log("locations :");
+          console.log(locations);
 
           function initMap() {
             // on crée la carte google maps
+            console.log(locations[0]);
             var map = new google.maps.Map(document.getElementById('map'), {
               zoom: 11,
               // on met le focus de chargement de la carte sur la première image
+              
               center: locations[0]
             });
 
             // on importe les images dans markers
             var labelimage = [];
             for (var i = 0; i < listgps.length; i++) {
-              // on met le chemin du programme dans une variable en brut car en javascript on ne peut pas récupérer le chemin du programme pour des raisons de sécurité
-              chemin = 'C:/Users/SpinHit/Desktop/MAP_IMAGE/'
-              // on met dans labelimage le chemin de l'image a récupérer
-              labelimage.push(chemin + listgps[i].path);
+              // l'image est sous format base64
+              var base64 = listgps[i].image;
+              // on met le chemin de l'image dans labelimage
+              labelimage.push('data:image/jpeg;base64,' + base64);
             }
 
+            console.log("labelimage :");
+            console.log(labelimage);
             // on crée les marqueurs sur la carte google maps
             var markers = locations.map(function (location, i) {
               return new google.maps.Marker({
@@ -156,29 +168,30 @@
                 position: location,
                 // on met l'image en tant que marqueur sur la carte google maps
                 icon: {
-                  // on met le chemin de l'image
-                  url: labelimage[i % labelimage.length],
+                  url: labelimage[i],
                   // on met la taille de l'image
                   scaledSize: new google.maps.Size(100, 100),
                   // on met le nom de l'image
                   name: listgps[i].name,
                   // on met le model de l'appareil photo
-                  model: listgps[i].model,
+                  model: listgps[i].camera_model,
                   // on met la marque de l'appareil photo
                   brand: listgps[i].brand,
                   // on met la taille de l'image
-                  taille: listgps[i].size,
+                  taille: listgps[i].weight,
                   // on met la date de création de l'image
-                  date: listgps[i].date,
+                  date: listgps[i].created_at,
                   // on met la localisation de l'image
-                  Localisation: listgps[i].lat + " " + listgps[i].lng
+                  Localisation: listgps[i].gps_position_lat + ' ' + listgps[i].gps_position_long
 
                 },
                 title: 'markerpins'
               });
             });
+            console.log("markers :");
+            console.log(markers);
 
-            // on fait en sorte que quand on clique sur les marqueurs cela affiche les informations de l'image dans une infobulle
+             // on fait en sorte que quand on clique sur les marqueurs cela affiche les informations de l'image dans une infobulle
             markers.forEach(function (marker) {
               // on crée l'infobulle avec le listener click sur le marqueur
               marker.addListener('click', function () {
@@ -189,7 +202,7 @@
                 // on affiche l'infobulle
                 infowindow.open(map, marker);
               });
-            });
+            }); 
 
             // on crée le cluster de marqueurs sur la carte google maps avec le script markerclusterer de google
             var markerCluster = new MarkerClusterer(map, markers,
@@ -248,7 +261,7 @@
             // we add the date, the brand and the model of the camera and the size of the image and the location of the image as a subtitle
             var p = document.createElement('p');
             p.className = 'timeline-subtitle';
-            p.innerHTML = 'Date : ' + listdate[i].date + '<br>Marque : ' + listdate[i].brand + '<br>Modèle : ' + listdate[i].model + '<br>Taille : ' + listdate[i].size + '<br>Localisation : ' + listdate[i].lat + ' ' + listdate[i].lng;
+            p.innerHTML = 'Date : ' + listdate[i].created_at + ' <br> Marque : ' + listdate[i].brand + ' <br> Modèle : ' + listdate[i].camera_model + ' <br> Taille : ' + listdate[i].size + ' <br> Localisation : ' + listdate[i].gps_position_lat + ' ' + listdate[i].gps_position_long + ' <br> ' + 'Poid :  ' + listdate[i].weight;
 
             div3.appendChild(p);
 
@@ -256,7 +269,8 @@
             var div4 = document.createElement('div');
             div4.className = 'timeline-body';
             var image = document.createElement('img');
-            image.src = 'C:/Users/SpinHit/Desktop/MAP_IMAGE/' + listdate[i].path
+            // l'image est sous forme base64 pour pouvoir l'afficher dans la timeline il faut la convertir en url pour pouvoir l'afficher
+            image.src = 'data:image/jpeg;base64,' + listdate[i].image;
             image.style.width = '100%';
             div4.appendChild(image);
             div2.appendChild(div3);
