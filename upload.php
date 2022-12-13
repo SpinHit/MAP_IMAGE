@@ -38,10 +38,11 @@
 
         // Convertissez les données GPS en un format lisible que si les données GPS sont disponibles
         if($gpslat != 'Inconnu' ) {
-          $gpslat = gps2Num($gpslat[0], $gpslat[1]);
+          $gpslat = gps2Num($gpslat[0], $gpslat[1], $gpslat[2]);
+
         }
         if($gpslong != 'Inconnu' ) {
-          $gpslong = gps2Num($gpslong[0], $gpslong[1]);
+          $gpslong = gps2Num($gpslong[0], $gpslong[1], $gpslong[2]);
         }
 
         // pour acceuillir les coordonnées GPS en degrés décimaux dans la base de données nous devons avoir des colonnes de type float
