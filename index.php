@@ -18,7 +18,9 @@
   <!-- On créer un deuxième champ pour importer une image et l'insserrer dans une base de données a l'aide d'un bouton -->
   <form action="upload.php" method="post" enctype="multipart/form-data">
     <label for="image">Sélectionnez une image à télécharger :</label>
-    <input type="file" name="image" id="image">
+    <input type="file" name="image[]" id="image" multiple>
+    <!-- <input type="file" name="image" id="image" multiple>
+ -->
     <input type="submit" value="Télécharger l'image" name="submit">
 </form>
 
