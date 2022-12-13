@@ -72,7 +72,8 @@
         $name = $image['name'];
         $camera_model = $image['camera_model'];
         $brand = $image['brand'];
-        $weight = $image['weight'];
+        // le poid est un chiffre en octets, on le veut en Mo alors on le divise par 1000000 et on laissera 2 chiffres après la virgule
+        $weight =  number_format($image['weight'] / 1000000, 2) . " Mo";
         $created_at = $image['created_at'];
         $gps_position_lat = $image['gps_position_lat'];
         $gps_position_long = $image['gps_position_long'];
