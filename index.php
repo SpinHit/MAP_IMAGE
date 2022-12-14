@@ -6,6 +6,10 @@
   <meta charset="utf-8">
   <script src="exif.js"></script>
   <script src="jquery-3.6.1.min.js"></script>
+  <!-- on importe vis.js d'internet -->
+  <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+  <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+
 
   <title>Projet Visualisation</title>
   <style>
@@ -126,8 +130,8 @@
           });
 
           // on affiche dans la console la liste des images avec les données récupérées
-          console.log(listgps);
-          console.log(listdate);
+/*           console.log(listgps);
+          console.log(listdate); */
 
           // on remplit locations avec les données de listgps
           var locations = [];
@@ -136,8 +140,8 @@
             
             var lat = listgps[i].gps_position_lat;
             var lng = listgps[i].gps_position_long;
-            console.log(lat);
-            console.log(lng);
+/*             console.log(lat);
+            console.log(lng); */
             locations.push({ lat, lng });
           }
           console.log("locations :");
@@ -226,9 +230,7 @@
           <div style="display:inline-block;width:100%;overflow-y:auto;">
             <p>Courbe du temps :</p>
 
-            <ul class="timeline timeline-horizontal">
-
-            </ul>
+            <div id="visualization"></div>
           </div>
         </div>
       </div>
@@ -237,72 +239,69 @@
     <script>
       // on lance le script que quand la liste est remplie
       var interval2 = setInterval(function () {
+        console.log("listdate :");
+        console.log(listdate);
+        
         // on met une condition pour ne pas lancer le script si la liste est vide
         if (listdate.length > 0) {
           // on clear l'interval pour ne pas le relancer à chaque fois que la liste est remplie
           clearInterval(interval2);
-          // on ajoute les images de la liste listdate à la timeline, pour chaque image on créer une carte avec les informations de l'image
-          for (var i = 0; i < listdate.length; i++) {
-            // https://codepen.io/ftrujilloh/pen/PpMYgJ/
-            // on créer la timeline avec le code ci-dessus et on a modifié le code pour qu'il corresponde à nos besoins 
-            var li = document.createElement('li');
-            li.className = 'timeline-item';
-            var div1 = document.createElement('div');
-            div1.className = 'timeline-badge primary';
-            var i1 = document.createElement('i');
-            i1.className = 'glyphicon glyphicon-check';
-            div1.appendChild(i1);
-            var div2 = document.createElement('div');
-            div2.className = 'timeline-panel';
-            var div3 = document.createElement('div');
-            div3.className = 'timeline-heading';
-            //we add the name of the image as a title
-            var h4 = document.createElement('h4');
-            h4.className = 'timeline-title';
-            h4.innerHTML = listdate[i].name;
-            div3.appendChild(h4);
-            // we add the date, the brand and the model of the camera and the size of the image and the location of the image as a subtitle
-            var p = document.createElement('p');
-            p.className = 'timeline-subtitle';
-            p.innerHTML = 'Date : ' + listdate[i].created_at + ' <br> Marque : ' + listdate[i].brand + ' <br> Modèle : ' + listdate[i].camera_model + ' <br> Taille : ' + listdate[i].size + ' <br> Localisation : ' + listdate[i].gps_position_lat + ' ' + listdate[i].gps_position_long + ' <br> ' + 'Poid :  ' + listdate[i].weight;
+          // on crée la timeline en en utilisant la librarie vis.js
+          var container = document.getElementById("visualization");
 
-            div3.appendChild(p);
+// note that months are zero-based in the JavaScript Date object
+var items = new vis.DataSet([]);
+
+for (var i = 0; i < listdate.length; i++) {
+  var item = listdate[i];
+    // created_at est sous le format "YYYY-MM-DD HH:MM:SS" on le transforme en format date pour la timeline 
+    // on récupere chaque info en faisant un split sur les espaces
+    var date = item.created_at.split(" ");
+    // on récupere la date
+    var date1 = date[0];
+    // on récupere l'heure
+    var heure = date[1];
+    console.log("heure :");
+    // on récupere l'année
+    var annee = date1.split("-")[0];
+    // on récupere le mois
+    var mois = date1.split("-")[1];
+    // on récupere le jour
+    var jour = date1.split("-")[2];
+    // on récupere l'heure de la date
+    var heure1 = heure.split(":")[0];
+    // on récupere les minutes de la date
+    var minute = heure.split(":")[1];
+    // on récupere les secondes de la date
+    var seconde = heure.split(":")[2];
 
 
-            var div4 = document.createElement('div');
-            div4.className = 'timeline-body';
-            var image = document.createElement('img');
-            // l'image est sous forme base64 pour pouvoir l'afficher dans la timeline il faut la convertir en url pour pouvoir l'afficher
-            image.src = 'data:image/jpeg;base64,' + listdate[i].image;
-            image.style.width = '100%';
-            div4.appendChild(image);
-            div2.appendChild(div3);
-            div2.appendChild(div4);
-            li.appendChild(div1);
-            li.appendChild(div2);
-            document.querySelector('#timeline ul').appendChild(li);
-          }
+    // on crée la date pour la timeline
+    var date2 = new Date(annee, mois, jour, heure1, minute, seconde);
 
-          // au survol on agrandit la taille de l'image dans la timeline et on pousse les autres images vers la droite
-          /*           var timeline = document.querySelectorAll('.timeline li');
-                    for (var i = 0; i < timeline.length; i++) {
-                      timeline[i].addEventListener('mouseover', function () {
-                        this.style.width = '200px';
-                        this.style.marginRight = '20px';
-                        this.style.zIndex = '1000';
-                        this.style.transition = 'all 0.5s';
-                        this.style.transform = 'scale(1.3)';
-                        this.style.transformOrigin = 'right';
-                      });
-                      timeline[i].addEventListener('mouseout', function () {
-                        this.style.width = '100px';
-                        this.style.marginRight = '0';
-                        this.style.zIndex = '0';
-                        this.style.transition = 'all 0.5s';
-                        this.style.transform = 'scale(1)';
-                        this.style.transformOrigin = 'right';
-                      });
-                    } */
+
+  items.add({
+
+    start: date2,
+    content:
+      '<div>' + item.name + '</div><img style="width: 500px; height: 20px;" src="data:image/jpeg;base64,' + item.image + '" id="imagetropfort"/>'
+
+  });
+}
+
+
+
+
+var options = {
+  editable: true,
+  margin: {
+    item: listdate.length,
+    axis: 5
+  },
+};
+
+var timeline = new vis.Timeline(container, items, options);
+          
 
 
 
@@ -317,6 +316,10 @@
 
 
     </script>
+  </div>
+
+
+
 
 
 
