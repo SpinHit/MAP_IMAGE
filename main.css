@@ -1,6 +1,10 @@
 #map {
-    height: 50%;
-    border: 1px solid black;
+    height: 70%;
+    border: 2px solid black;
+    width: 80%;
+    margin: 0 auto;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 html,
@@ -13,3 +17,104 @@ body {
 .gm-style img {
     border-radius: 15px;
 }
+
+.vis-item .vis-item-content img {
+    max-width: 300px;
+}
+
+.headernav {
+    background: #e4f4fe;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    /* stylish border bottom for a nav bar */
+    border-bottom: 1px solid #e4f4fe;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.headernav img {
+    height: 100px;
+}
+
+/* style formulaire upload */
+#formupload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #e4f4fe;
+    width: 30vw;
+    margin: 0 auto;
+    margin-top: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid #e4f4fe;
+}
+
+#formupload input {
+    margin: 10px;
+    border-radius: 10px;
+    border: 1px solid #e4f4fe;
+    padding: 10px;
+}
+
+#timeline {
+    display: none;
+}
+
+/* on séléctionne le premier child */
+#formupload input:nth-child(2) {
+    margin: 10px;
+    border-radius: 10px;
+    border: 1px solid #959595;
+    padding: 10px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    color: #959595;
+
+}
+
+/* on séléctionne le second child */
+#formupload input:nth-child(3) {
+    margin: 10px;
+    border-radius: 10px;
+    border: 1px solid #959595;
+    padding: 10px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#formupload button {
+    margin: 10px;
+    border-radius: 10px;
+    border: 1px solid #e4f4fe;
+    padding: 10px;
+    background: #e4f4fe;
+}
+
+/* input style */
+
+
+#formupload label {
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background: #e4f4fe;
+    border: 1px solid #e4f4fe;
+    border-radius: 4px;
+}
+
+
+input[type="file"]::file-selector-button {
+    display: none;
+}
+
+body #map {
+    width: 80vw;
+
+}
+
+
+/* style formulaire inscription */

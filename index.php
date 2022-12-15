@@ -9,7 +9,9 @@
   <!-- on importe vis.js d'internet -->
   <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
   <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
-
+  
+  <!-- on importe bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
   <title>Projet Visualisation</title>
   <style>
@@ -19,15 +21,20 @@
 
 <body>
 
-  <!-- On créer un deuxième champ pour importer une image et l'insserrer dans une base de données a l'aide d'un bouton -->
-  <form action="upload.php" method="post" enctype="multipart/form-data">
-    <label for="image">Sélectionnez une image à télécharger :</label>
-    <input type="file" name="image[]" id="image" multiple>
-    <!-- <input type="file" name="image" id="image" multiple>
- -->
-    <input type="submit" value="Télécharger l'image" name="submit">
-</form>
+<!-- on créer un header navbar avec le logo au centre et un background de couleur #e4f4fe -->
+<div class="headernav">
+  <img src="logo.png" alt="logo" class="logo">
+</div>
 
+
+  <!-- On créer un deuxième champ pour importer une image et l'insserrer dans une base de données a l'aide d'un bouton -->
+  <!-- bootsrap style formulaire d'upload -->
+  <form action="upload.php" method="post" enctype="multipart/form-data" id="formupload" class="formupload">
+    <label for="image"><h3>Sélectionnez une image à télécharger</h3></label>
+    <input type="file" name="image[]" id="fileUpload" multiple class="btn btn-primary text-center ">
+    <input type="submit" value="Télécharger l'image" name="submit" id="submitupload" >
+  </form>
+  
   <?php 
   ini_set('memory_limit', '512M');
   // on importe upload.php pour pouvoir utiliser la base de données
@@ -35,9 +42,33 @@
 
   ?>
 
+<button onclick="showMap()">Try it</button>
+<button onclick="showTimeline()">Try it</button>
+
+
   <div id="map">
 
     <script>
+
+function showMap() {
+  var x = document.getElementById("map");
+  var y = document.getElementById("timeline");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+    y.style.display = "none";
+  } else {
+  }
+}
+
+function showTimeline() {
+  var x = document.getElementById("map");
+  var y = document.getElementById("timeline");
+  if (x.style.display === "none") {
+  } else {
+    x.style.display = "none";
+    y.style.display = "block";
+  }
+}
 
       //fonction pour importer un src comme un async defer pour les scripts js 
       function loadScript(src) {
@@ -144,12 +175,12 @@
             console.log(lng); */
             locations.push({ lat, lng });
           }
-          console.log("locations :");
-          console.log(locations);
+/*           console.log("locations :");
+          console.log(locations); */
 
           function initMap() {
             // on crée la carte google maps
-            console.log(locations[0]);
+            /* console.log(locations[0]); */
             var map = new google.maps.Map(document.getElementById('map'), {
               zoom: 11,
               // on met le focus de chargement de la carte sur la première image
@@ -166,8 +197,8 @@
               labelimage.push('data:image/jpeg;base64,' + base64);
             }
 
-            console.log("labelimage :");
-            console.log(labelimage);
+  /*           console.log("labelimage :");
+            console.log(labelimage); */
             // on crée les marqueurs sur la carte google maps
             var markers = locations.map(function (location, i) {
               return new google.maps.Marker({
@@ -195,8 +226,8 @@
                 title: 'markerpins'
               });
             });
-            console.log("markers :");
-            console.log(markers);
+   /*          console.log("markers :");
+            console.log(markers); */
 
              // on fait en sorte que quand on clique sur les marqueurs cela affiche les informations de l'image dans une infobulle
             markers.forEach(function (marker) {
@@ -223,7 +254,7 @@
   <div id="timeline">
     <!-- on crée une timeline avec les informations des images -->
 
-    <div class="container">
+    
       <div class="row">
         <div class="col-md-12">
 
@@ -235,12 +266,12 @@
         </div>
       </div>
 
-    </div>
+    
     <script>
       // on lance le script que quand la liste est remplie
       var interval2 = setInterval(function () {
-        console.log("listdate :");
-        console.log(listdate);
+  /*       console.log("listdate :");
+        console.log(listdate); */
         
         // on met une condition pour ne pas lancer le script si la liste est vide
         if (listdate.length > 0) {
@@ -261,7 +292,7 @@ for (var i = 0; i < listdate.length; i++) {
     var date1 = date[0];
     // on récupere l'heure
     var heure = date[1];
-    console.log("heure :");
+    /* console.log("heure :"); */
     // on récupere l'année
     var annee = date1.split("-")[0];
     // on récupere le mois
@@ -284,20 +315,26 @@ for (var i = 0; i < listdate.length; i++) {
 
     start: date2,
     content:
-      '<div>' + item.name + '</div><img style="width: 500px; height: 20px;" src="data:image/jpeg;base64,' + item.image + '" id="imagetropfort"/>'
-
+      '<div>' + item.name + '</div><img style="width: 500px; height: 20px;" src="data:image/jpeg;base64,' + item.image + '">'+ '<div>' + item.model + '</div>' + '<div>' + item.brand + '</div>' + '<div>' + item.weight + '</div>' + '<div>' + item.created_at + '</div>' + '<div>' + item.gps_position_lat + ' ' + item.gps_position_long + '</div>',
   });
 }
 
 
 
+ // pour définir une taille maximale aux items de la timeline il faut utiliser le margin de la timeline
 
+
+ 
 var options = {
-  editable: true,
+  editable: false,
   margin: {
     item: listdate.length,
     axis: 5
   },
+  zoomMin: 1000 * 60 * 60 * 24 * 31 * 3,
+  zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 10,
+  height: '700px',
+  
 };
 
 var timeline = new vis.Timeline(container, items, options);
@@ -316,6 +353,7 @@ var timeline = new vis.Timeline(container, items, options);
 
 
     </script>
+ 
   </div>
 
 
@@ -325,7 +363,7 @@ var timeline = new vis.Timeline(container, items, options);
 
 
 
-</body>
+
 
 
 

@@ -23,11 +23,11 @@
   
     // Récupérez les informations de l'image
     $image_name = $_FILES['image']['name'][$key];
-    $model = $exif['Model'] ? $exif['Model'] : 'Inconnu';
-    $marque = $exif['Make'] ? $exif['Make'] : 'Inconnu';
-    $poid = $exif['FileSize'] ;
-        // si la date n'est pas disponible, utilisez la date de création de l'image
-        $date = $exif['DateTimeOriginal'] ? $exif['DateTimeOriginal'] : $exif['FileDateTime'];
+    $model = isset($exif['Model']) ? $exif['Model'] : 'Inconnu';
+    $marque = isset($exif['Make']) ? $exif['Make'] : 'Inconnu';
+    $poid = $exif['FileSize'] ? $exif['FileSize'] : 0;
+        // si la date n'est pas disponible, utilisez la date de modification de l'image tout en convertissant la date en format UNIX
+        $date = $exif['DateTimeOriginal'] ? $exif['DateTimeOriginal'] : date('Y-m-d H:i:s', filemtime($_FILES['image']['tmp_name'][$key]));
 
         // Récupérez les données GPS de l'exif
         $gpslat = $exif['GPSLatitude'] ? $exif['GPSLatitude'] : 'Inconnu';
@@ -83,8 +83,8 @@
         }
       
   }
-  // Redirigez vers la page d'accueil
   header("Location: index.php");
+  exit;
 }
   
 
