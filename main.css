@@ -1,6 +1,6 @@
 #map {
-    height: 70%;
-    border: 2px solid black;
+    height: 65%;
+    border: 5px solid #e4f4fe;
     width: 80%;
     margin: 0 auto;
     border-radius: 15px;
@@ -62,6 +62,13 @@ body {
 
 #timeline {
     display: none;
+    height: 65%;
+    border: 5px solid #e4f4fe;
+    width: 80%;
+    margin: 0 auto;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
 }
 
 /* on séléctionne le premier child */
@@ -116,5 +123,31 @@ body #map {
 
 }
 
+#buttonslidecenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+}
 
-/* style formulaire inscription */
+#buttonslidecenter button {
+    /* on met un border radius que dans les angles du haut */
+    border-radius: 10px 10px 0 0;
+    padding: 2px;
+    background: white;
+    width: 170px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
+    border: 1px solid white;
+}
+
+/* footer */
+.footer {
+    background: #e4f4fe;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    bottom: 0;
+}

@@ -41,9 +41,10 @@
   include 'upload.php';
 
   ?>
-
-<button onclick="showMap()">Try it</button>
-<button onclick="showTimeline()">Try it</button>
+<div id="buttonslidecenter">
+  <button onclick="showMap()">Carte</button>
+  <button onclick="showTimeline()">Frise chronologique</button>
+</div>
 
 
   <div id="map">
@@ -254,18 +255,13 @@ function showTimeline() {
   <div id="timeline">
     <!-- on crée une timeline avec les informations des images -->
 
-    
-      <div class="row">
-        <div class="col-md-12">
+
+
 
           <div style="display:inline-block;width:100%;overflow-y:auto;">
-            <p>Courbe du temps :</p>
 
             <div id="visualization"></div>
           </div>
-        </div>
-      </div>
-
     
     <script>
       // on lance le script que quand la liste est remplie
@@ -332,8 +328,13 @@ var options = {
     axis: 5
   },
   zoomMin: 1000 * 60 * 60 * 24 * 31 * 3,
-  zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 10,
-  height: '700px',
+  zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 10*3,
+  height: '65vh',
+  start: '2000-01-01', // début de la période de temps à afficher
+  end: '2030-01-01', // fin de la période de temps à afficher
+
+  
+  
   
 };
 
@@ -355,6 +356,10 @@ var timeline = new vis.Timeline(container, items, options);
     </script>
  
   </div>
+      <!--  footer sticky bootstap -->
+  <footer class="footer">
+      <h6> Visualise 2023</h6>  
+    </footer>
 
 
 
