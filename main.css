@@ -22,6 +22,12 @@ body {
     max-width: 300px;
 }
 
+/*  on vise la deuxieme div */
+
+/* .vis-item .vis-item-content div {
+    display: none;
+} */
+
 .headernav {
     background: #e4f4fe;
     width: 100%;

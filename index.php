@@ -311,7 +311,7 @@ for (var i = 0; i < listdate.length; i++) {
 
     start: date2,
     content:
-      '<div>' + item.name + '</div><img style="width: 500px; height: 20px;" src="data:image/jpeg;base64,' + item.image + '">'+ '<div>' + item.model + '</div>' + '<div>' + item.brand + '</div>' + '<div>' + item.weight + '</div>' + '<div>' + item.created_at + '</div>' + '<div>' + item.gps_position_lat + ' ' + item.gps_position_long + '</div>',
+      '<div>' + item.name + '</div><img style="width: 500px; height: 20px;" src="data:image/jpeg;base64,' + item.image + '">'+ '<div id="info-box" class="info-box" style="display:none;">'  +'<div>' + item.model + '</div>' + '<div>' + item.brand + '</div>' + '<div>' + item.weight + '</div>' + '<div>' + item.created_at + '</div>' + '<div>' + item.gps_position_lat + ' ' + item.gps_position_long +'</div>'+ '</div>',
   });
 }
 
