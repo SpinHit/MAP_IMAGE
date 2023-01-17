@@ -33,3 +33,4 @@ Ce projet a pour objectif de créer une application web permettant de visualiser
 - Assurez-vous que le fichier `.htaccess` est présent pour éviter les erreurs de routing
 - Assurez-vous que vous avez activé l'extension exif sur votre serveur PHP
 
+lien vidéo : https://www.youtube.com/watch?v=WiuJ5Oy2mp0
