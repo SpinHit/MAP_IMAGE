@@ -1,16 +1,35 @@
-# MAP_IMAGE
+# Visualisation d'images à travers une carte Google et une timeline interactive
 
-Ce projet consiste en une application web permettant de visualiser des images à travers une carte Google Maps et une timeline interactive. Il utilise les technologies PHP, HTML, CSS, JavaScript, l'API Google Maps, la librairie vis.js et une base de données MySQL pour stocker les images et les métadonnées.
+Ce projet a pour objectif de créer une application web permettant de visualiser des images à travers une carte Google et une timeline interactive. Les images et leurs métadonnées sont stockées dans une base de données. Il permet de visualiser les images en fonction de leur emplacement géographique lorsque les métadonnées de localisation sont disponibles, ou en utilisant la timeline lorsque ces métadonnées ne sont pas disponibles.
 
-Pour utiliser l'application, il est nécessaire de disposer d'un compte sur Google Cloud Platform et d'obtenir une clé d'API valide pour utiliser l'API Google Maps. Il est également nécessaire d'avoir un serveur web (comme Apache) et PHP installé, ainsi qu'un accès à une base de données MySQL.
+## Technologies utilisées
+- PHP
+- HTML
+- CSS
+- JavaScript
+- API Google Maps
+- Librairie vis.js
+- Base de données MYSQL
+- Librairie exif
 
-Le projet comprend plusieurs fichiers :
+## Fonctionnalités
+- Upload d'images
+- Visualisation des images sur une carte Google en utilisant les métadonnées de localisation
+- Visualisation des images sur une timeline interactive en utilisant les métadonnées de date de prise de vue
+- Stockage des images et des métadonnées dans une base de données
+- Conversion des données GPS en un format lisible pour le stockage
 
-Un fichier "index.php" contenant le code HTML, CSS et JavaScript pour l'interface utilisateur
-Un fichier "upload.php" contenant le code PHP pour l'upload des images et la gestion des métadonnées
-Un fichier "config.php" contenant les informations de connexion à la base de données
-Un fichier "gps2Num.php" contenant le code PHP pour convertir les données GPS en un format lisible
-Un dossier "js" contenant les fichiers JavaScript nécessaires à l'application
-Un dossier "css" contenant les feuilles de style CSS pour l'interface utilisateur
-Un dossier "img" contenant les images utilisées dans l'interface utilisateur
-Pour utiliser l'application, il est nécessaire de configurer les informations de connexion à la base de données dans le fichier "config.php" et de télécharger les images via le formulaire d'upload. Les images téléchargées seront affichées sur une carte Google Maps lorsque les métadonnées de localisation sont disponibles, ou via la timeline lorsque ces métadonnées ne sont pas disponibles. Il est également possible de basculer entre l'affichage sur la carte et sur la timeline en utilisant les boutons sur l'interface utilisateur.
+## Utilisation
+1. Téléchargez ou clonez ce dépôt sur votre ordinateur
+2. Installez les dépendances en utilisant la commande `composer install`
+3. Créez une base de données MySQL et importez le fichier `database.sql` pour créer les tables nécessaires
+4. Modifiez les informations de connexion à la base de données dans le fichier `config.php`
+5. Obtenez une clé API valide pour l'API Google Maps et modifiez l'URL de l'API dans le fichier `index.php`
+6. Lancez un serveur PHP local en utilisant la commande `php -S localhost:8000`
+7. Accédez à l'application en accédant à l'adresse `http://localhost:8000` sur votre navigateur web
+8. Utilisez le formulaire d'upload pour télécharger des images et visualisez-les sur la carte ou la timeline interactive
+
+## Remarques
+- Assurez-vous que le fichier `.htaccess` est présent pour éviter les erreurs de routing
+- Assurez-vous que vous avez activé l'extension exif sur votre serveur PHP
+
