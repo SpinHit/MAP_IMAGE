@@ -327,7 +327,7 @@ var options = {
     item: listdate.length,
     axis: 5
   },
-  zoomMin: 1000 * 60 * 60 * 24 * 31 * 3,
+  zoomMin: 1000 * 60 * 60 * 1 ,
   zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 10*3,
   height: '65vh',
   start: '2000-01-01', // début de la période de temps à afficher
